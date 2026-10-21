@@ -9,6 +9,27 @@
   <!-- Bootstrap Icons CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <style>
+    /* พื้นหลังภาพลาวาแบบ Fade In เต็มจอ */
+    .lava-bg-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('lava-bg.jpg') no-repeat center center / cover;
+      opacity: 0;
+      pointer-events: none;
+      z-index: -1;
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: brightness(0.9);
+    }
+
+    /* เมื่อเมาส์ชี้ที่เหรียญ ให้พื้นหลัง Fade ขึ้นมา */
+    body:has(.coin-container:hover) .lava-bg-overlay,
+    body.laser-active .lava-bg-overlay {
+      opacity: 1;
+    }
+
     /* อนิเมชันเหรียญหมุน 3D (3D Coin Flip Effect) */
     .coin-container {
       width: 160px;
@@ -37,7 +58,7 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      -webkit-backface-visibility: hidden; /* ซ่อนด้านหลังเมื่อหันหน้า */
+      -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
       border-radius: 50%;
       overflow: hidden;
@@ -56,11 +77,52 @@
     .coin-back {
       transform: rotateY(180deg);
       border-color: #ff3344;
-      box-shadow: 0 0 25px rgba(255, 51, 68, 0.65);
+      box-shadow: 0 0 25px rgba(255, 51, 68, 0.7);
+    }
+
+    /* แอนิเมชันปรับแต่งการ์ดและสีข้อความเมื่อระเบิดพลัง */
+    .card {
+      transition: all 0.6s ease;
+    }
+
+    body:has(.coin-container:hover) .card,
+    body.laser-active .card {
+      background-color: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      border-color: rgba(255, 75, 45, 0.35);
+      box-shadow: 0 8px 25px rgba(255, 60, 0, 0.25) !important;
+    }
+
+    /* การ์ดโปรไฟล์ส่วนตัวในโหมดเลเซอร์ */
+    body:has(.coin-container:hover) .profile-card,
+    body.laser-active .profile-card {
+      background-color: rgba(20, 10, 10, 0.8) !important;
+      border-color: #ff3344 !important;
+      box-shadow: 0 0 35px rgba(255, 51, 68, 0.7) !important;
+    }
+
+    body:has(.coin-container:hover) .profile-card h2,
+    body.laser-active .profile-card h2 {
+      color: #ffffff !important;
+      text-shadow: 0 0 12px rgba(255, 80, 50, 0.9);
+    }
+
+    body:has(.coin-container:hover) .profile-card p,
+    body.laser-active .profile-card p {
+      color: #ffc2b4 !important;
+    }
+
+    body:has(.coin-container:hover) h1.text-primary,
+    body.laser-active h1.text-primary {
+      color: #ff4757 !important;
+      text-shadow: 0 0 15px rgba(255, 71, 87, 0.8);
     }
   </style>
 </head>
 <body class="bg-light">
+  <!-- พื้นหลังภาพลาวา -->
+  <div class="lava-bg-overlay"></div>
+
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container">
       <a class="navbar-brand fw-bold" href="#">My Portfolio</a>
@@ -71,7 +133,7 @@
     <h1 class="text-center text-primary mb-4">ยินดีต้อนรับสู่ IT Portfolio</h1>
 
     <!-- ส่วนข้อมูลส่วนตัว -->
-    <div class="card shadow-sm p-4 mb-4 text-center">
+    <div class="card profile-card shadow-sm p-4 mb-4 text-center">
       <!-- รูปโปรไฟล์อนิเมชันเหรียญพลิกด้าน -->
       <div class="coin-container" title="วางเมาส์เพื่อพลิกเหรียญ!">
         <div class="coin-inner">
@@ -144,5 +206,14 @@
       </div>
     </div>
   </main>
+
+  <!-- สคริปต์รองรับการสลับคลาสเมื่อ Hover -->
+  <script>
+    const coin = document.querySelector('.coin-container');
+    if (coin) {
+      coin.addEventListener('mouseenter', () => document.body.classList.add('laser-active'));
+      coin.addEventListener('mouseleave', () => document.body.classList.remove('laser-active'));
+    }
+  </script>
 </body>
 </html>
